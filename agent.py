@@ -47,10 +47,10 @@ class ChatbotMessageSender:
             'X-NCP-CHATBOT_SIGNATURE': signature
         }
 
-        print("## Timestamp : ", timestamp)
-        print("## Signature : ", signature)
-        print("## headers ", custom_headers)
-        print("## Request Body : ", encode_request_body)
+        # print("## Timestamp : ", timestamp)
+        # print("## Signature : ", signature)
+        # print("## headers ", custom_headers)
+        # print("## Request Body : ", encode_request_body)
 
         ## POST Request
         response = requests.post(headers=custom_headers, url=self.ep_path, data=encode_request_body)
