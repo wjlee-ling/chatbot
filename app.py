@@ -17,23 +17,21 @@ def get_response():
     init_clova_bot()
     sst.json = ""
     sst.ans = ""
-    if "clova_bot" in sst:
-        res = sst.clova_bot.req_message_send(sst.user_input)
-        print(f"Response code: {res.status_code}")
+    res = sst.clova_bot.req_message_send(sst.user_input)
+    print(f"Response code: {res.status_code}")
 
-        if res.status_code == 200:
-            with st.spinner(text="답변을 생성하고 있어요"):
-                time.sleep(0.8)
-            sst.json = res.text
-            print(res.text)
-            parse(sst.json)
-            # json_obj = res.json() 
-            # sst.ans = json_obj["bubbles"][0] #["data"]["cover"]["data"]["description"]
+    if res.status_code == 200:
+        with st.spinner(text="답변을 생성하고 있어요"):
+            time.sleep(0.8)
+        sst.json = res.text
+        print(res.text)
+        parse(sst.json)
+        # json_obj = res.json() 
+        # sst.ans = json_obj["bubbles"][0] #["data"]["cover"]["data"]["description"]
 
 def get_chatgpt_response():
     init_chatgpt_bot()
-    if "ChatGPT_bot" in sst:
-        sst.chatgpt_ans = sst.ChatGPT_bot.req_message_send(sst.user_input)
+    sst.chatgpt_ans = sst.ChatGPT_bot.req_message_send(sst.user_input)
     sst.json = ""
     
 def parse(text):
