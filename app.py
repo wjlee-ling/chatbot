@@ -24,7 +24,7 @@ def parse(text):
     pattern_url = re.compile(r'(?<={"url":").+?(?="})')
     match_reply = re.search(pattern_reply, text)
     if match_reply:
-        sst.ans = match_reply.group(0).replace(r"\n", "\n")
+        sst.ans = match_reply.group(0).replace(r"\n", "\n").replace('"","url":"', ' ')
         if match_url:= re.search(pattern_url, text):
             sst.ans += f"\n{match_url.group(0)}"
     else:
