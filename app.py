@@ -51,6 +51,6 @@ if "ans" in sst:
     with col2:
         st.image("https://github.com/boostcampaitech4lv23nlp2/final-project-level3-nlp-13/assets/61496071/3c7b10ff-5bc5-4006-8400-d234df523c46", caption="저는 시아예요")
 
-if "json" in sst:
-    with st.expander("More info"): 
-        st.write(sst.json)
+# if "json" in sst:
+#     with st.expander("More info"): 
+#         st.write(sst.json)
