@@ -6,11 +6,15 @@ from agent import ChatbotMessageSender, ChatGPTMessanger
 
 
 @st.cache_resource
-def init_bots():
+def init_clova_bot():
     sst.clova_bot = ChatbotMessageSender()
+
+@st.cache_resource
+def init_chatgpt_bot():
     sst.ChatGPT_bot = ChatGPTMessanger()
 
 def get_response():
+    init_clova_bot()
     sst.json = ""
     sst.ans = ""
     res = sst.clova_bot.req_message_send(sst.user_input)
@@ -26,6 +30,7 @@ def get_response():
         # sst.ans = json_obj["bubbles"][0] #["data"]["cover"]["data"]["description"]
 
 def get_chatgpt_response():
+    init_chatgpt_bot()
     sst.chatgpt_ans = sst.ChatGPT_bot.req_message_send(sst.user_input)
     sst.json = ""
     
@@ -45,7 +50,6 @@ def parse(text):
         sst.ans = "다시 ENTER를 눌러주세요"
 
 st.title("경기청년 갭이어 프로그램 FAQ")
-init_bots()
 user_input = st.text_input(label="챗봇에게 물어보기👇", key="user_input", on_change=get_response)
 
 with st.expander("이런 건 안 궁금하세요?", expanded=True):
