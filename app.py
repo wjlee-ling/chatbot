@@ -2,12 +2,18 @@ import time
 import re
 import streamlit as st
 from streamlit import session_state as sst
-from agent import ChatbotMessageSender
+from agent import ChatbotMessageSender, ChatGPTMessanger
+
+
+@st.cache_resource
+def init_bots():
+    sst.clova_bot = ChatbotMessageSender()
+    sst.ChatGPT_bot = ChatGPTMessanger()
 
 def get_response():
     sst.json = ""
     sst.ans = ""
-    res = ChatbotMessageSender().req_message_send(sst.user_input)
+    res = sst.clova_bot.req_message_send(sst.user_input)
     print(f"Response code: {res.status_code}")
 
     if res.status_code == 200:
@@ -19,6 +25,10 @@ def get_response():
         # json_obj = res.json() 
         # sst.ans = json_obj["bubbles"][0] #["data"]["cover"]["data"]["description"]
 
+def get_chatgpt_response():
+    sst.chatgpt_ans = sst.ChatGPT_bot.req_message_send(sst.user_input)
+    sst.json = ""
+    
 def parse(text):
     pattern_fallback = re.compile("❌해당 질문에 대한 시나리오를 구성하지 못했습니다.")
     pattern_reply = re.compile(r'(?<="data":{"description":").+?(?="})')
@@ -35,7 +45,7 @@ def parse(text):
         sst.ans = "다시 ENTER를 눌러주세요"
 
 st.title("경기청년 갭이어 프로그램 FAQ")
-
+init_bots()
 user_input = st.text_input(label="챗봇에게 물어보기👇", key="user_input", on_change=get_response)
 
 with st.expander("이런 건 안 궁금하세요?", expanded=True):
@@ -51,7 +61,14 @@ with st.expander("이런 건 안 궁금하세요?", expanded=True):
 if "ans" in sst:
     col1, col2 = st.columns(2)
     with col1:
-        st.success(sst.ans)
+        if "is_fallback" in sst and sst.is_fallback:
+            st.warning(f"질문을 제대로 이해하지 못했어요. 대신 ChatGPT🤖가 답변 드려도 될까요? (답변에 시간이 좀 걸려요)")
+            if st.button(label="ChatGPT🤖의 답변 보기", on_click=get_chatgpt_response):
+                if "chatgpt_ans" in sst:
+                    st.success(sst.chatgpt_ans)
+        else:
+            st.success(sst.ans)
+
     with col2:
         if "is_fallback" in sst and sst.is_fallback:
             st.image("https://github.com/wjlee-ling/algorithms/assets/61496071/48c2e677-e122-4667-80c7-5315d527540f", width=130, caption="삼촌이 아직 많이 부족해요ㅠ")
