@@ -5,19 +5,10 @@ from streamlit import session_state as sst
 from agent import ChatbotMessageSender,ChatGPTMessanger
 
 
-@st.cache_resource
-def init_clova_bot():
-    sst.clova_bot = ChatbotMessageSender()
-
-@st.cache_resource
-def init_chatgpt_bot():
-    sst.ChatGPT_bot = ChatGPTMessanger()
-
 def get_response():
-    init_clova_bot()
     sst.json = ""
     sst.ans = ""
-    res = sst.clova_bot.req_message_send(sst.user_input)
+    res = ChatbotMessageSender().req_message_send(sst.user_input)
     print(f"Response code: {res.status_code}")
 
     if res.status_code == 200:
@@ -30,8 +21,7 @@ def get_response():
         # sst.ans = json_obj["bubbles"][0] #["data"]["cover"]["data"]["description"]
 
 def get_chatgpt_response():
-    init_chatgpt_bot()
-    sst.chatgpt_ans = sst.ChatGPT_bot.req_message_send(sst.user_input)
+    sst.chatgpt_ans = ChatGPTMessanger().req_message_send(sst.user_input)
     sst.json = ""
     
 def parse(text):
