@@ -20,9 +20,13 @@ def get_response():
         # sst.ans = json_obj["bubbles"][0] #["data"]["cover"]["data"]["description"]
 
 def parse(text):
+    pattern_fallback = re.compile("❌해당 질문에 대한 시나리오를 구성하지 못했습니다.")
     pattern_reply = re.compile(r'(?<="data":{"description":").+?(?="})')
     pattern_url = re.compile(r'(?<={"url":").+?(?="})')
     match_reply = re.search(pattern_reply, text)
+
+    sst.is_fallback = True if re.search(pattern_fallback, text) else False
+
     if match_reply:
         sst.ans = match_reply.group(0).replace(r"\n", "\n").replace('"","url":"', ' ')
         if match_url:= re.search(pattern_url, text):
@@ -49,7 +53,10 @@ if "ans" in sst:
     with col1:
         st.success(sst.ans)
     with col2:
-        st.image("https://github.com/boostcampaitech4lv23nlp2/final-project-level3-nlp-13/assets/61496071/3c7b10ff-5bc5-4006-8400-d234df523c46", caption="저는 시아예요")
+        if "is_fallback" in sst and sst.is_fallback:
+            st.image("https://github.com/wjlee-ling/algorithms/assets/61496071/48c2e677-e122-4667-80c7-5315d527540f", width=130, caption="삼촌이 아직 많이 부족해요ㅠ")
+        else:
+            st.image("https://github.com/boostcampaitech4lv23nlp2/final-project-level3-nlp-13/assets/61496071/3c7b10ff-5bc5-4006-8400-d234df523c46", width=130, caption="저는 시아예요")
 
 # if "json" in sst:
 #     with st.expander("More info"): 
