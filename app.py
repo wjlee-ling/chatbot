@@ -2,8 +2,7 @@ import time
 import re
 import streamlit as st
 from streamlit import session_state as sst
-from agent import ChatbotMessageSender
-from agent import ChatGPTMessanger
+from agent import ChatbotMessageSender,ChatGPTMessanger
 
 
 @st.cache_resource
