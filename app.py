@@ -28,7 +28,7 @@ def parse(text):
         if match_url:= re.search(pattern_url, text):
             sst.ans += f"\n{match_url.group(0)}"
     else:
-        sst.ans = "다시 submit 버튼을 눌러주세요"
+        sst.ans = "다시 ENTER를 눌러주세요"
 
 st.title("경기청년 갭이어 프로그램 FAQ")
 
