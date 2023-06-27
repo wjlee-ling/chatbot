@@ -1,31 +1,41 @@
+import time
 import re
-import json
 import streamlit as st
 from streamlit import session_state as sst
 from agent import ChatbotMessageSender
 
-
-def get_response(user_input):
-    # p = re.compile(r'(?<="data":{"description":).+(?=},"information")')
-    # if "user_input" in sst:
-    res = ChatbotMessageSender().req_message_send(user_input)
+def get_response():
+    sst.json = ""
+    sst.ans = ""
+    res = ChatbotMessageSender().req_message_send(sst.user_input)
     print(f"Response code: {res.status_code}")
+
     if res.status_code == 200:
-        json_obj = json.loads(res.text)
-        sst.json = json_obj
-        sst.ans = json_obj["bubbles"][0]["data"]["cover"]["data"]["description"]
+        with st.spinner(text="답변을 생성하고 있어요"):
+            time.sleep(0.8)
+        sst.json = res.text
+        print(res.text)
+        parse(sst.json)
+        # json_obj = res.json() 
+        # sst.ans = json_obj["bubbles"][0] #["data"]["cover"]["data"]["description"]
 
-        # if re.findall(p, res.text):
-        #     sst.ans = re.findall(p, res.text)[0] 
-
+def parse(text):
+    pattern_reply = re.compile(r'(?<="data":{"description":").+?(?="})')
+    pattern_url = re.compile(r'(?<={"url":").+?(?="})')
+    match_reply = re.search(pattern_reply, text)
+    if match_reply:
+        sst.ans = match_reply.group(0)
+        if match_url:= re.search(pattern_url, text):
+            sst.ans += f"\n{match_url.group(0)}"
+    else:
+        sst.ans = "다시 submit 버튼을 눌러주세요"
 
 st.title("경기청년 갭이어 프로그램 FAQ")
-with st.form(key='my_form'):
-	user_input = st.text_input(label='무엇이 궁금하세요?')
-	submit_button = st.form_submit_button(label='Submit', on_click=get_response, kwargs={"user_input":user_input})
+user_input = st.text_input(label='무엇이 궁금하세요?', key="user_input", on_change=get_response)
 
 if "ans" in sst:
-    # st.write(type(sst.ans))
     st.success(sst.ans)
+
+if "json" in sst:
     with st.expander("More info"): 
         st.write(sst.json)
