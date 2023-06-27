@@ -74,7 +74,7 @@ class ChatbotMessageSender:
         return signing_key
 
 class ChatGPTMessanger:
-    openai_api_key = openai_api
+    openai.api_key = openai_api
     
     def req_message_send(self, user_input):
         messages = [
